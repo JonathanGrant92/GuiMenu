@@ -13,37 +13,40 @@ public class Main {
         Menu start_menu = new Menu(start_options);
         Options user_selection;
 
+        start_menu.printMessage("Welcome to a GUI menu demonstration.");
+
         do {
             user_selection = start_menu.getOption();
 
             switch(user_selection){
                 case A:
-                    System.out.println(Options.A + " is always good.");
+                    start_menu.printMessage(Options.A + " is always good.");
                     break;
                 case B:
-                    System.out.println(Options.B + " is displaying the second menu. Hold on!");
+                    start_menu.printMessage(Options.B + " is displaying the second menu. Hold on!");
                     runFormMenu();
                     break;
                 case C:
-                    System.out.println(Options.C + " demands your input.");
+                    start_menu.printMessage(Options.C + " demands your input.");
                     ArrayList<String> requested_info = new ArrayList<>();
                     requested_info.add("Address :");
                     requested_info.add("Aspiration :");
                     requested_info.add("Life Story :");
                     ArrayList<String> answers = start_menu.runTextReader(Options.C, requested_info);
 
-                    System.out.println("Your responses: ");
+                    StringBuilder verify_response = new StringBuilder("Your responses: ");
                     for (String answer : answers) {
-                        System.out.println("\t" + answer);
+                        verify_response.append("\t").append(answer);
                     }
+                    start_menu.printMessage(verify_response.toString());
 
                     break;
                 case QUIT:
                     start_menu.closeMenu();
-                    System.out.println("Quiting program.");
+                    start_menu.printMessage("Quiting program.");
                     break;
                 default:
-                    System.out.println(user_selection + " is not available.");
+                    start_menu.printMessage(user_selection + " is not available.");
             }
 
         } while (user_selection != Options.QUIT);
@@ -60,35 +63,35 @@ public class Main {
 
             switch (user_selection) {
                 case A1:
-                    System.out.println(Options.A1);
+                    form_menu.printMessage(String.valueOf(Options.A1));
                     break;
 
                 case B1:
-                    System.out.println(Options.B1);
+                    form_menu.printMessage(String.valueOf(Options.B1));
                     break;
 
                 case C1:
-                    System.out.println(Options.C + " demands your input.");
+                    form_menu.printMessage(Options.C + " demands your input.");
                     ArrayList<String> requested_info = new ArrayList<>();
                     requested_info.add("Pet's name:");
                     requested_info.add("Car: ");
                     requested_info.add("Bank Pin: ");
                     ArrayList<String> answers = form_menu.runTextReader(Options.C, requested_info);
 
-                    System.out.println("Your responses are: ");
+                    StringBuilder verify_response = new StringBuilder("Your responses: ");
                     for (String answer : answers) {
-                        System.out.println("\t" + answer);
+                        verify_response.append("\t").append(answer);
                     }
-                    System.out.println(Options.C1);
+                    form_menu.printMessage(String.valueOf(verify_response));
                     break;
 
                 case CLOSE:
                     form_menu.closeMenu();
-                    System.out.println("Does " + user_selection + " equal " + Options.CLOSE);
+                    form_menu.printMessage("Does " + user_selection + " equal " + Options.CLOSE);
                     break;
 
                 default:
-                    System.out.println(user_selection + " is not available.");
+                    form_menu.printMessage(user_selection + " is not available.");
             }
 
         } while (user_selection != Options.CLOSE);

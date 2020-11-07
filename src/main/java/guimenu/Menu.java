@@ -1,6 +1,7 @@
 package main.java.guimenu;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,16 +14,23 @@ public class Menu implements ActionListener {
     private volatile boolean lock_text_box;
     private Options user_selection;
     private final JFrame MENU_FRAME;
+    private final JTextArea DIALOG_TEXT;
+    private final Border MENU_BORDER;
 
     public Menu(EnumSet<Options> menu_selection) {
         this.lock_menu = true;
         this.lock_text_box = true;
-        MENU_FRAME = new JFrame();
+        this.DIALOG_TEXT = new JTextArea();
+        Dimension dialog_size = new Dimension(200, 100);
+
+        this.MENU_FRAME = new JFrame();
+        this.MENU_BORDER = BorderFactory.createEmptyBorder(125,300,125,300);
+
         JPanel menu_panel = new JPanel();
         JLabel menu_label = new JLabel("Select a choice?");
 
         menu_panel.add(menu_label);
-        menu_panel.setBorder(BorderFactory.createEmptyBorder(125,300,100,300));
+        menu_panel.setBorder(MENU_BORDER);
         menu_panel.setLayout(new GridLayout(0,1));
 
         for(Options option : menu_selection){
@@ -31,11 +39,15 @@ public class Menu implements ActionListener {
             menu_panel.add(option_button);
         }
 
-        MENU_FRAME.add(menu_panel, BorderLayout.CENTER);
-        MENU_FRAME.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        MENU_FRAME.setTitle("GUI Menu Program");
-        MENU_FRAME.pack();
-        MENU_FRAME.setVisible(true);
+        this.DIALOG_TEXT.setPreferredSize(dialog_size);
+        this.DIALOG_TEXT.setText("Nothing to show.");
+
+        this.MENU_FRAME.add(menu_panel, BorderLayout.CENTER);
+        this.MENU_FRAME.add(this.DIALOG_TEXT, BorderLayout.SOUTH);
+        this.MENU_FRAME.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.MENU_FRAME.setTitle("GUI Menu Program");
+        this.MENU_FRAME.pack();
+        this.MENU_FRAME.setVisible(true);
     }
 
     //	***************************************************************************
@@ -46,9 +58,9 @@ public class Menu implements ActionListener {
      * @return the selected option to menu.
      */
     public Options getOption() {
-            while (lock_menu) Thread.onSpinWait();
-            lock_menu = true;
-            return this.user_selection;
+        while (lock_menu) Thread.onSpinWait();
+        lock_menu = true;
+        return this.user_selection;
     }
 
     @Override
@@ -75,23 +87,36 @@ public class Menu implements ActionListener {
      */
     public ArrayList<String> runTextReader(Options title, ArrayList<String> fields) {
         JFrame text_frame = new JFrame();
+        JPanel form = new JPanel();
         JPanel text_panel = new JPanel();
+        JPanel entry_panel = new JPanel();
+        JPanel submission_panel = new JPanel();
         ArrayList<JTextArea> form_inputs = new ArrayList<>();
 
-        text_panel.setBorder(BorderFactory.createEmptyBorder(125,300,100,300));
+        form.setBorder(MENU_BORDER);
+        form.setLayout(new GridLayout(2,2));
+        form.add(text_panel);
+        form.add(entry_panel);
+
         text_panel.setLayout(new GridLayout(0,1));
+        entry_panel.setLayout(new GridLayout(0, 1));
 
         for (String field : fields) {
             text_panel.add(new JLabel(field));
             form_inputs.add(new JTextArea());
-            text_panel.add(form_inputs.get(fields.indexOf(field)));
+        }
+
+        for (JTextArea text_area : form_inputs) {
+            text_area.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            entry_panel.add(text_area);
         }
 
         JButton submit = new JButton("SUBMIT");
         submit.addActionListener(this::submitPerformed);
-        text_panel.add(submit);
+        submission_panel.add(submit);
+        form.add(submission_panel);
+        text_frame.add(form, BorderLayout.CENTER);
 
-        text_frame.add(text_panel, BorderLayout.CENTER);
         text_frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         text_frame.setTitle("OPERATION: " + title);
         text_frame.pack();
@@ -106,9 +131,14 @@ public class Menu implements ActionListener {
         }
 
         text_frame.dispose();
+        this.DIALOG_TEXT.setText("Nothing to show.");
         return responses;
     }
 
     public void submitPerformed(ActionEvent s) { lock_text_box = false; }
+
+    public void printMessage(String message) {
+        this.DIALOG_TEXT.setText(message);
+    }
 
 }
