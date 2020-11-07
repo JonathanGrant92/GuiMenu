@@ -4,13 +4,8 @@ import java.util.*;
 
 public class Main {
 
-    private static final Scanner PROGRAM_SCANNER = new Scanner(System.in);
-
-//    public static Scanner getProgramScanner() { return PROGRAM_SCANNER; }
-
     public static void main(String[] args) {
         runStartMenu();
-        PROGRAM_SCANNER.close();
     }
 
     private static void runStartMenu() {
